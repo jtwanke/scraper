@@ -1,0 +1,8 @@
+parse\YelpParser.class
+api\ScraperAPI.class
+parse\Link.class
+parse\Parser.class
+fetch\YelpFetcher.class
+parse\YellowPagesParser.class
+fetch\HtmlDocFetcher.class
+fetch\YellowPagesFetcher.class
