@@ -16,6 +16,13 @@ Build
 
 Scraper is managed using [Maven](https://maven.apache.org/) so a typical build would look something like `mvn clean package` in the terminal. 
 
+Exe
+---
+
+To run Scraper, you'll need an active installation of [Apache Tomcat](https://tomcat.apache.org/) on your machine. You can either deploy the prebuilt .war file in the scraper/target directory, or follow the instructions in the 'Build' section of this document and deploy your own build. 
+
+If you're having trouble deploying the code, take a look at [Deployment with Tomcat](https://tomcat.apache.org/tomcat-7.0-doc/appdev/deployment.html#Deployment_With_Tomcat).
+
 More To Come
 ------------
 
