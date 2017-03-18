@@ -23,6 +23,13 @@ To run Scraper, you'll need an active installation of [Apache Tomcat](https://to
 
 If you're having trouble deploying the code, take a look at [Deployment with Tomcat](https://tomcat.apache.org/tomcat-7.0-doc/appdev/deployment.html#Deployment_With_Tomcat).
 
+Usage
+-----
+
+Once you've successfully deployed your Scraper build, go to `localhost:8080/scraper/` (or the appropriate port for your Tomcat installation) and you'll find a form with two text fields, two checkboxes, and a button labeled "Go!"
+
+The text fields are for the phrase and location to be used during the scrape of the target sites, as well as specifying which sites you would like to scrape. 
+
 More To Come
 ------------
 
