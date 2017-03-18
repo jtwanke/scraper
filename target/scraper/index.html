@@ -12,8 +12,6 @@
 <!-- Bootstrap Complete JS -->
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<!-- Scraper CSS -->
-<!-- <link rel="stylesheet" href="css/style.css">  -->
 </head>
 <body>
 	<div class="container fluid">
@@ -26,17 +24,19 @@
 		might want to try something a little easier to understand.</p>
 	</div>
 	<div class="container fluid">
-		<form>
+		<form id="indexform">
 			<div class="form-group">
 				<label for="phrase">Phrase</label> <input id="phrase" type="text"
 					class="form-control" placeholder="Search for...">
+				<span id="alrtphrase"></span>
 			</div>
 			<div class="form-group">
 				<label for="loc">Location</label> <input id="loc" type="text"
 					class="form-control"
 					placeholder="Location (i.e. San Jose California)">
+				<span id="alrtloc"></span>
 			</div>
-			<div class="row">
+			<div id="checkboxes" class="row">
 				<div class="col-xs-4">
 					<div class="checkbox">
 						<label> <input id="ypcheck" type="checkbox">
@@ -51,9 +51,12 @@
 				</div>
 				<div class="col-xs-4"></div>
 				<div class="col-xs-4"></div>
+				
 			</div>
-
-			<button id="submit" type="button" class="btn btn-default">go!</button>
+			<div class="row" style="margin: 5px;">
+				<p id="alrtchx" style="color: red;"></p>
+			</div>
+			<button id="submit" type="submit" class="btn btn-default">go!</button>
 		</form>
 	</div>
 	<div class="container">
