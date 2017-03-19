@@ -69,6 +69,7 @@ function executeSearch(domain, phrase, loc) {
 			$("#linkgrid").append(generateResultsTable(tableID, domain));
 			var listings = response.result;
 			var items = 0;
+			//do for each loop in vanillaJS and then append in Jquery.
 			$.each(listings, function(index) {
 				if (items > 9) {
 					return;
