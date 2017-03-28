@@ -28,7 +28,7 @@ Usage
 
 Once you've successfully deployed your Scraper build, go to `localhost:8080/scraper/` (or the appropriate port for your Tomcat installation) and you'll find a form with two text fields, two checkboxes, and a button labeled "Go!"
 
-The text fields are for the phrase and location to be used during the scrape of the target sites, as well as specifying which sites you would like to scrape. 
+The text fields are for the phrase and location to be used during the scrape of the target sites. The checkboxes can be used to specify which sites you would like to scrape. 
 
 More To Come
 ------------
