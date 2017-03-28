@@ -2,7 +2,7 @@ package api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-//import javax.ws.rs.POST;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import db.Dao;
 import fetch.HtmlDocFetcher;
 import fetch.YellowPagesFetcher;
 import fetch.YelpFetcher;
@@ -28,8 +29,8 @@ import java.net.URLEncoder;
 @Path("/search")
 public class ScraperAPI {
 	
-	private final static int ERR_PHRASE = 1;
-	private final static int ERR_ENCODING = 2;
+	private final static String ERR_LENGTH = "Incorrect Input Length";
+	private final static String ERR_ENCODING = "Incorrect Encoding";
 	private final static int YELP_MODE = 0;
 	private final static int YP_MODE = 1;
 	
@@ -37,46 +38,52 @@ public class ScraperAPI {
 	private final static String YELP_ID = "yelp";
 	private final static String YP = "YellowPages";
 	private final static String YP_ID = "yellowpages";
-	
-	// build generic function that handles logic
+
 	@GET
-	@Path("/yellowpages")
+	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response ypSearch(@QueryParam("phrase") String phrase, @QueryParam("loc") String loc) {
-		return Response.status(200).entity(this.start(phrase, loc, ScraperAPI.YP_ID, ScraperAPI.YP, ScraperAPI.YP_MODE)).build();
+	public Response Search(@QueryParam("domain") String domain, @QueryParam("phrase") String phrase, @QueryParam("loc") String loc) {
+		return Response.status(200).entity(this.start(phrase, loc, domain)).build();
 	}
 	
-	@GET
-	@Path("/yelp")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response yelpSearch(@QueryParam("phrase") String phrase, @QueryParam("loc") String loc) {
-		return Response.status(200).entity(this.start(phrase, loc, ScraperAPI.YELP_ID, ScraperAPI.YELP, ScraperAPI.YELP_MODE)).build();
-	}
+//  TODO:
+//	Lets move this to another API class (like StorageAPI?)
+//	@POST
+//	@Path("/save")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public Response saveSearch(@QueryParam("phrase") String phrase, @QueryParam("loc") String loc, @QueryParam("site") String site) {
+//		String output = "{\"status\":\"SUCCESS\"}";
+//		Dao.saveSearch(phrase, loc, Integer.decode(site));
+//		return Response.status(200).entity(output).build();
+//	}
 	
 	/**
 	 * Starts the execution of a site scraping. Does generic message-building and exception-catching.
 	 * @param phrase The phrase you are searching for on the target site.
 	 * @param loc The location the results should be tailored to.
-	 * @param tabid The table ID of the results.
-	 * @param mode The target site.
+	 * @param domain The domain of the site to be scraped.
 	 * @return The message to be built into the HTTP response.
 	 */
-	private String start(String phrase, String loc, String tabid, String domain, int mode){
+	private String start(String phrase, String loc, String domain){ //this is new method 
+		int mode = this.getMode(domain); //should we use server context to store hashmap?
+		String tabid = this.getID(domain);
 		if (phrase.length() > 0 && loc.length() > 0) { //trivial validation
 			try {
-				Link[] theLinks = this.search(phrase, loc, mode); //this is new method call
+				Link[] theLinks = this.search(phrase, loc, mode); 
 				if(theLinks != null){
 					String mapToJson = ScraperAPI.JsonMapLinks(theLinks);
 					return "{\"status\":\"SUCCESS\"," +
 						   "\"tableid\":" + " \"" + tabid + "\"," + 
 					       "\"domain\":" + " \"" + domain +"\"," + 
-						   "\"input\":"  + " \"" + phrase + "\"," + 
+						   "\"phrase\":"  + " \"" + phrase + "\"," + 
+					       "\"loc\":"  + " \"" + loc + "\"," +
 					       "\"result\":" + mapToJson + "}";
 				}
 			} catch (UnsupportedEncodingException e) {
+				return ScraperAPI.errorString(phrase, loc, ScraperAPI.ERR_ENCODING);
 			}
 		}
-		return ScraperAPI.errorString(phrase, loc);
+		return ScraperAPI.errorString(phrase, loc, ScraperAPI.ERR_LENGTH);
 	}
 	
 	/**
@@ -139,16 +146,33 @@ public class ScraperAPI {
 		}
 	}
 	
+	private int getMode(String domain){
+		if(domain.equals("yelp"))
+			return ScraperAPI.YELP_MODE;
+		else if(domain.equals("yellowpages"))
+			return ScraperAPI.YP_MODE;
+		else
+			return -1;
+	}
+	private String getID(String domain){
+		if(domain.equals("yelp"))
+			return ScraperAPI.YELP_ID;
+		else if(domain.equals("yellowpages"))
+			return ScraperAPI.YP_ID;
+		else
+			return "";
+	}
+	
 	private static String JsonMapLinks(Link[] links){
 		Gson objGson = new GsonBuilder().setPrettyPrinting().create();
 		return objGson.toJson(links);
 	}
 	
-	private static String errorString(String phrase, String loc){
+	private static String errorString(String phrase, String loc, String error){
 		return "{\"status\":\"FAILURE\", " + 
-				"\"err\":\"INVALID ENCODING\", " + 
+				"\"err\":\"" + error + "\", " + 
 				" \"phrase\":\"" + phrase + "\", " + 
 				"\"loc\" : \"" + loc + "\", " + 
-				"\"errnum\" : \"" + ScraperAPI.ERR_ENCODING + "\"}";
+				"\"errnum\" : \"" + Integer.toString(0) + "\"}";
 	}
 }
